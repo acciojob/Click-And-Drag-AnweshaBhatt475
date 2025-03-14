@@ -1,44 +1,43 @@
-// Select the container element
-const items = document.querySelector('.items');
+// Step 1: Get the container element
+const container = document.querySelector('.items');
 
+// Step 2: Create variables to track the drag
 let isDragging = false; // To check if dragging is happening
-let startX; // Store the starting X coordinate of the mouse
-let scrollLeft; // Store the container's initial scroll position
+let startX; // To store where the mouse started
+let scrollStart; // To store the container's scroll position
 
-// Mouse down event - When the user clicks on the container
-items.addEventListener('mousedown', (e) => {
-  isDragging = true; // Enable dragging mode
-  items.classList.add('active'); // Add the active class (changes cursor style)
+// Step 3: When the mouse is pressed down
+container.addEventListener('mousedown', (event) => {
+  isDragging = true; // Start dragging
+  container.classList.add('active'); // Add a class to change appearance (optional)
 
-  // Get the initial mouse position
-  startX = e.pageX - items.offsetLeft; 
-  // Save the current scroll position of the container
-  scrollLeft = items.scrollLeft;
+  // Save the starting position
+  startX = event.pageX; // Mouse X position
+  scrollStart = container.scrollLeft; // Initial scroll position
 });
 
-// Mouse leave event - When the user moves the cursor out of the container
-items.addEventListener('mouseleave', () => {
-  isDragging = false; // Disable dragging mode
-  items.classList.remove('active'); // Remove the active class
+// Step 4: When the mouse moves
+container.addEventListener('mousemove', (event) => {
+  if (!isDragging) return; // If not dragging, do nothing
+
+  // Prevent default actions like text selection
+  event.preventDefault();
+
+  // Calculate how far the mouse moved
+  const movedX = event.pageX - startX;
+
+  // Scroll the container by that distance
+  container.scrollLeft = scrollStart - movedX;
 });
 
-// Mouse up event - When the user releases the mouse button
-items.addEventListener('mouseup', () => {
-  isDragging = false; // Disable dragging mode
-  items.classList.remove('active'); // Remove the active class
+// Step 5: When the mouse button is released
+container.addEventListener('mouseup', () => {
+  isDragging = false; // Stop dragging
+  container.classList.remove('active'); // Remove the active class
 });
 
-// Mouse move event - When the user moves the mouse
-items.addEventListener('mousemove', (e) => {
-  if (!isDragging) return; // If not dragging, stop the function here
-  e.preventDefault(); // Prevent default behavior (like text selection)
-
-  // Get the current mouse position
-  const x = e.pageX - items.offsetLeft;
-
-  // Calculate the distance moved by the mouse
-  const distance = x - startX;
-
-  // Scroll the container by the distance moved
-  items.scrollLeft = scrollLeft - distance;
+// Step 6: When the mouse leaves the container
+container.addEventListener('mouseleave', () => {
+  isDragging = false; // Stop dragging when the mouse leaves
+  container.classList.remove('active'); // Remove the active class
 });
